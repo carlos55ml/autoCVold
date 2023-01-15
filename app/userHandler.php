@@ -6,10 +6,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['action'])) {
     switch ($_POST['action']) {
       case 'login':
-        initSession($_POST['userInput'], $_POST['passwordInput']);
+        initSession($_POST['userInput'], hash('sha256', $_POST['passwordInput']));
         break;
       case 'logout':
         logOut();
+        break;
+      case 'register':
+        registerUser($_POST);
         break;
       default:
         setcookie("errorMessage", "Error Desconocido.", 0, "/");
@@ -39,7 +42,6 @@ function logOut() {
 }
 
 function tryUserLogin(string $user, string $pass) {
-  $pass = hash('sha256', $pass);
   $userObj = fetchUser($user);
   if (!$userObj) {
     return "'$user' NO EXISTE";
@@ -49,6 +51,21 @@ function tryUserLogin(string $user, string $pass) {
   }
 
   return true;
+}
+
+function registerUser($data) {
+  $username = $data['userInput'];
+  $passwd = hash('sha256', $data['passwordInput']);
+  if (fetchUser($username)) {
+    setcookie("errorMessage", "El usuario ya existe.", 0, "/");
+    header("Location:/error.php");
+  } else {
+    $queryString =
+      "INSERT INTO users(username, passwd) VALUES (?, ?)";
+    $queryValues = array($username, $passwd);
+    DB::preparedQuery($queryString, $queryValues);
+    initSession($username, $passwd);
+  }
 }
 
 
