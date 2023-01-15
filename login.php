@@ -21,12 +21,16 @@ include_once __DIR__ . '/modules/head.php';
       <input type="password" class="form-control" id="passwordInput" name="passwordInput" placeholder="Password" required>
       <label for="passwordInput">Contraseña</label>
     </div>
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+    <p class="error-info" id="errorInfo"></p>
+    <button class="w-100 btn btn-lg btn-primary disabled" type="submit">Inicia Sesion</button>
+    <br>
+    <br>
+    <p class="text-muted">No tienes cuenta? <a href="/register.php">Registrate aqui</a>.</p>
     <p class="mt-5 mb-3 text-muted">&copy; Carlos Moran 2023</p>
   </form>
 </main>
 
-<!-- <script src="/js/login.js"></script> -->
+<script src="/js/login.js"></script>
 
 </body>
 </html>
