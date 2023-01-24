@@ -8,9 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       case 'login':
         initSession($_POST['userInput'], hash('sha256', $_POST['passwordInput']));
         break;
-      case 'logout':
-        logOut();
-        break;
       case 'register':
         registerUser($_POST);
         break;
@@ -21,6 +18,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+  if (isset($_GET['action'])) {
+    switch ($_GET['action']) {
+      case 'logout':
+        logOut();
+        break;
+      default:
+        setcookie("errorMessage", "Error Desconocido.", 0, "/");
+        header("Location:/error.php");
+        break;
+    }
+  }
+}
+
 
 /**
  * Fetch an specific user from DB
@@ -38,7 +50,7 @@ function logOut() {
   session_start();
   $_SESSION['user'] = null;
   session_destroy();
-  header("Location:/login.php");
+  header("Location:/");
 }
 
 function tryUserLogin(string $user, string $pass) {
@@ -80,6 +92,3 @@ function initSession(string $username, string $passwd) {
     header("Location:/error.php");
   }
 }
-
-
-?>
